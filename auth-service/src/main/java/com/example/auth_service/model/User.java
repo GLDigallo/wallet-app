@@ -1,5 +1,6 @@
 package com.example.auth_service.model;
 
+import com.example.auth_service.audit.Auditable;
 import com.example.auth_service.security.Roles;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

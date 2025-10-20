@@ -1,43 +1,75 @@
-Auth-Service – Wallet App
+# 🧩 Auth-Service – Wallet App
 
-**Descripción
+## 📝 Descripción
 
-El Auth-Service es un microservicio encargado de gestión de usuarios y autenticación dentro de la aplicación Wallet.
-Permite:
+El **Auth-Service** es un microservicio encargado de la **gestión de usuarios y autenticación** dentro de la aplicación **Wallet-App**.  
+Es responsable del registro, autenticación, manejo de roles y validación de credenciales.  
+Además, incorpora **prácticas de concurrencia, programación funcional y auditoría** para mejorar el rendimiento y la mantenibilidad del sistema.
 
-Registro y login de usuarios.
+---
 
-Manejo de roles (USER, ADMIN, MODERATOR).
+## ⚙️ Tecnologías utilizadas
 
-Validación de credenciales y control de acceso.
+- ☕ **Java 21**
+- 🚀 **Spring Boot 3 (Web, Data JPA, Validation)**
+- 🧩 **Lombok** para simplificar el código boilerplate
+- 🧠 **H2 Database** (modo desarrollo)
+- 🐘 **PostgreSQL** (modo producción / contenedor Docker)
+- 🧰 **Maven** para construcción
+- 🐳 **Docker** para contenerización
 
-Este microservicio sirve como base para la seguridad de otros microservicios que se integrarán en el futuro.
+---
 
-**Tecnologías
+## 🧠 Características clave
 
-Java 21
+✅ Registro y login de usuarios  
+✅ Manejo de roles: `USER`, `ADMIN`, `MODERATOR`  
+✅ Validación de credenciales  
+✅ Contraseñas seguras con validaciones personalizadas  
+✅ Auditoría automática de creación y actualización  
+✅ Uso de **Thread** y **ExecutorService** para tareas asíncronas (notificaciones o logs)  
+✅ Implementación de **Streams** y **Lambdas** para manipulación eficiente de datos  
+✅ Excepciones personalizadas para errores de negocio  
+✅ Respuesta estandarizada mediante DTOs y Mappers
 
-Spring Boot (Web, Data JPA, Validation)
+---
 
-Lombok
+## 🧩 Arquitectura interna
 
-H2 Database (in-memory)
+auth-service/
+├── advice/
+│ └── GlobalExceptionHandler.java
+├── audit/
+│ └── Auditable.java
+├── controller/
+│ └── AuthController.java
+├── dto/
+│ ├── RegisterRequest.java
+│ ├── LoginRequest.java
+│ └── UserResponse.java
+├── exception/
+│ └── EmailAlreadyExistsException.java
+├── mapper/
+│ └── UserMapper.java
+├── model/
+│ └── User.java
+├── security/
+│ └── Roles.java
+├── repository/
+│ └── UserRepository.java
+├── service/
+│ └── AsyncNotificationService.java
+│ └── UserService.java
+│ └── UserValidationService.java
 
-PostgreSQL (opcional, contenedor Docker)
 
-Maven para construcción del proyecto
+---
 
-Docker para contenerización
+##Configuración de la base de datos
 
-**Configuración de la base de datos
+**Modo H2 (por defecto en desarrollo)**
 
-El microservicio soporta dos modos de base de datos:
-
-H2 (in-memory, para desarrollo rápido)
-
-Acceso a la consola H2: /h2-console
-
-Configuración en application.properties:
+properties
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
 spring.datasource.url=jdbc:h2:mem:testdb
@@ -45,58 +77,50 @@ spring.datasource.username=sa
 spring.datasource.password=
 spring.jpa.hibernate.ddl-auto=update
 
+**Modo PostgreSQL (producción / Docker)**
 
-PostgreSQL (recomendado para producción, con Docker)
-
-Variables de entorno para conectarse al contenedor Docker:
 spring.datasource.url=jdbc:postgresql://postgres:5432/wallet_db
 spring.datasource.username=walletuser
 spring.datasource.password=walletpass
 spring.jpa.hibernate.ddl-auto=update
 
 
-**Cómo levantar el microservicio
+Cómo ejecutar el microservicio
 Usando Maven
-# Construir el proyecto
-mvn clean package
 
-# Ejecutar
+mvn clean package
 java -jar target/auth-service-0.0.1-SNAPSHOT.jar
 
-Usando Docker
-# Construir la imagen
-docker build -t auth-service .
 
-# Ejecutar el contenedor
+Usando Docker
+
+docker build -t auth-service .
 docker run -p 8080:8080 --name auth-service auth-service
 
-**Endpoints disponibles
-Método	Endpoint	Descripción
-POST	/auth/register	Registro de nuevo usuario
-POST	/auth/login	Login de usuario
-GET	/auth/users	Obtener todos los usuarios
-GET	/auth/users/{id}	Obtener usuario por ID
 
-**Validaciones de seguridad
+🧩 Validaciones y seguridad
 
-Email único por usuario.
+Email único por usuario
 
-Contraseña debe tener:
+Contraseña segura:
 
-Al menos 8 caracteres
+≥ 8 caracteres
 
-Una letra mayúscula y una minúscula
+1 mayúscula, 1 minúscula, 1 número, 1 símbolo especial
 
-Un número
+Rol asignado automáticamente: USER por defecto
 
-Un símbolo especial (@$!%*?&)
+Excepciones personalizadas para errores de validación o duplicidad
 
-Roles asignados automáticamente (USER por defecto).
+Estado actual del microservicio
 
-**Estado del microservicio
+✅ Registro y login funcional
+✅ Roles y validaciones aplicadas
+✅ Implementación de Streams, Lambdas y Threads
+✅ Auditoría de acciones de usuario
+🚧 Próximos pasos: integración con Wallet-Service
 
-✅ Registro y login de usuarios funcional
+💬 Autor
 
-✅ Roles y control de acceso
-
-⏳ Próximamente: integración con otros microservicios (Wallet, Transaction, Security)
+👤 Gabriel Di Gallo
+📦 Proyecto educativo y de portafolio personal — arquitectura de microservicios Java

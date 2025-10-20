@@ -7,6 +7,7 @@ import com.example.auth_service.model.User;
 import com.example.auth_service.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,14 +26,12 @@ public class UserService {
         }
 
         User user = UserMapper.fromRegisterRequest(request);
-
         User savedUser = userRepository.save(user);
         return UserMapper.toResponse(savedUser, "Usuario registrado correctamente");
     }
 
     public Set<UserResponse> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
+        return userRepository.findAll().stream()
                 .map(user -> UserMapper.toResponse(user, null))
                 .collect(Collectors.toSet());
     }
@@ -40,7 +39,22 @@ public class UserService {
     public UserResponse getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
         return UserMapper.toResponse(user, null);
+    }
+
+    // --- Ejemplo de uso de threads para registrar varios usuarios ---
+    public void registrarVariosUsuarios() {
+        List<RegisterRequest> requests = List.of(
+                new RegisterRequest("Ana", "Perez", "ana@test.com", "Abcd1234!"),
+                new RegisterRequest("Juan", "Lopez", "juan@test.com", "Abcd1234!")
+        );
+
+        requests.forEach(req -> new Thread(() -> {
+            try {
+                registerUser(req);
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }).start());
     }
 }
